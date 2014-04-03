@@ -1,0 +1,14 @@
+{
+	"name": "tink_xml",
+	"url" : "http://haxetink.org/tink_xml",
+	"license": "MIT",
+	"tags": ["tink", "cross", "utility", "xml"],
+	"description": "Xml to Haxe objects",
+	"version": "0.0.0",
+	"releasenote": "Initial version.",
+	"contributors": ["back2dos"],
+	"dependencies": {
+		"tink_macro": "0.3.0-beta"
+	},
+	"classPath": "src" 
+}

@@ -1,0 +1,67 @@
+<theme version="2" displayName="Solarized">
+	<palette version="1" mode="light">
+		<color identifier="foreground" value="445b62ff"/>
+		<color identifier="background" value="fdf5dbff"/>
+		<color value="a87700ff"/>
+		<color value="c13600ff"/>
+		<color value="d7191eff"/>
+		<color value="cb156fff"/>
+		<color value="5658b9ff"/>
+		<color value="0f75caff"/>
+		<color value="189286ff"/>
+		<color value="738c00ff"/>
+		<color value="ffffffff"/>
+		<color value="808080ff"/>
+		<color value="000000ff"/>
+	</palette>
+	<palette version="1" mode="dark">
+		<color identifier="foreground" value="819090ff"/>
+		<color identifier="background" value="002029ff"/>
+		<color value="a87700ff"/>
+		<color value="c13600ff"/>
+		<color value="d7191eff"/>
+		<color value="cb156fff"/>
+		<color value="5658b9ff"/>
+		<color value="0f75caff"/>
+		<color value="189286ff"/>
+		<color value="738c00ff"/>
+		<color value="ffffffff"/>
+		<color value="808080ff"/>
+		<color value="000000ff"/>
+	</palette>
+	
+	<item scope="heading" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item scope="paragraph" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item scope="grouping" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item scope="text" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item scope="attributedText" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item scope="object" colorsLight=";;" colorsDark=";;" traits=""/>
+	
+	<item definition="filename" colorsLight="4097,3;4097,2;9,-5" colorsDark="4097,2;;10,-5" traits=""/>
+	<item definition="heading1" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits="bold"/>
+	<item definition="heading2" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits="bold"/>
+	<item definition="heading3" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits="bold"/>
+	<item definition="heading4" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits="bold"/>
+	<item definition="heading5" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits=""/>
+	<item definition="heading6" colorsLight="4097,9;4097,9;" colorsDark="9,4;9,4;" traits=""/>
+	<item definition="codeblock" colorsLight="2,4;2,4;2,-5" colorsDark="2,-2;2,-2;2,-5" traits="bold"/>
+	<item definition="comment" colorsLight="4097,3;4097,2;9,-5" colorsDark="4097,2;4097,2;10,-5" traits=""/>
+	<item definition="divider" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item definition="nativeblock" colorsLight="2,4;2,4;2,-5" colorsDark="2,-2;2,-2;2,-5" traits="bold"/>
+	<item definition="blockquote" colorsLight="5,4;4097,8;" colorsDark="0,4;4097,8;" traits="bold"/>
+	<item definition="orderedList" colorsLight=";5,4;" colorsDark=";0,4;" traits="bold"/>
+	<item definition="unorderedList" colorsLight=";5,4;" colorsDark=";0,4;" traits=""/>
+	<item definition="cite" colorsLight=";;" colorsDark=";;" traits=""/>
+	<item definition="code" colorsLight="0,3;5,-3;" colorsDark="4096,2;5,-2;" traits=""/>
+	<item definition="delete" colorsLight="5,4;4097,2;" colorsDark="0,4;4097,2;" traits="strikethrough"/>
+	<item definition="emph" colorsLight="5,4;4097,2;" colorsDark="0,4;4097,2;" traits="bold,italic"/>
+	<item definition="inlineComment" colorsLight="4097,3;4097,3;" colorsDark="7,-4;7,-4;" traits=""/>
+	<item definition="inlineNative" colorsLight="0,3;5,-3;" colorsDark="4096,2;5,-2;" traits=""/>
+	<item definition="mark" colorsLight=";4097,3;2,-5" colorsDark=";4097,3;0,-5" traits=""/>
+	<item definition="strong" colorsLight="5,4;4097,2;" colorsDark="0,4;4097,2;" traits="bold"/>
+	<item definition="annotation" colorsLight="4097,9;0,-4;0,-3" colorsDark="9,4;0,-4;0,-3" traits=""/>
+	<item definition="link" colorsLight="4097,9;4097,2;" colorsDark="5,4;4097,1;" traits="bold"/>
+	<item definition="footnote" colorsLight=";5,-3;" colorsDark=";5,-3;" traits=""/>
+	<item definition="image" colorsLight="8,0;4097,2;" colorsDark="8,0;4097,2;" traits=""/>
+	<item definition="video" colorsLight=";4097,2;" colorsDark=";4097,2;" traits=""/>
+</theme>
