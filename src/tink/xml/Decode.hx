@@ -1,4 +1,5 @@
 package tink.xml;
+import tink.xml.Decode.ParseError;
 
 #if macro
 import haxe.macro.Type;
@@ -14,6 +15,16 @@ private enum PropKind {
 	List(name:String);
 }
 #end
+
+class ParseError extends tink.core.Error.TypedError<{ node:Xml, document:Xml }> {
+  public function new(msg:String, data, ?pos) {
+    super(UnprocessableEntity, msg, pos);
+    this.data = data;
+  }
+  override function toString() {
+    return '$message at element <' + data.node.nodeName+'>';
+  }
+}
 
 class Decode {
 	#if macro
@@ -79,12 +90,14 @@ class Decode {
 												Tag(getName(':tag'));
 											else 
 												Tag(f.name);
-										
+										function error(msg:String) {
+                      //return macro throw $v{msg};
+                      return macro throw new tink.xml.Decode.ParseError($v{msg}, { node: x, document: root });
+                    }
 										var value = 
 											switch kind {
 												case List(_):
 													var ct = f.type.toComplex();
-													// throw ct.toString();
 													getReader((macro { var a : $ct = null; a[0]; } ).typeof().sure());
 												case Attr(name):
 													getReader(f.type, macro x.get($v{name}));
@@ -97,9 +110,9 @@ class Decode {
 												else 
 													switch kind {
 														case Attr(name):
-															macro throw ('missing attribute ' + $v{name});
+															error('missing attribute $name');
 														case Tag(name):
-															macro throw ('missing element ' + $v{name});
+															error('missing element $name');
 														case List(_):
 															macro null;
 													}
@@ -111,9 +124,12 @@ class Decode {
 													else $missing;
 											case Tag(name):
 												macro {
-													var x = x.elementsNamed($v{name}).next();
-													if (x == null) $missing;
-													else $value;
+													var candidate = x.elementsNamed($v{name}).next();
+													if (candidate == null) $missing;
+													else {
+                            var x = candidate;
+                            $value;
+                          }
 												}
 											case List(name):
 												macro {
@@ -137,9 +153,14 @@ class Decode {
 					macro @:pos(e.pos) {
 						var raw = $e;
 						try { 
-							var x = Xml.parse(raw).firstElement(); 
+							var root = Xml.parse(raw).firstElement(); 
+              var x = root;
 							tink.core.Outcome.Success($ret); 
 						}
+            catch (e:tink.xml.Decode.ParseError) {
+              var e:tink.core.Error = e;
+              tink.core.Outcome.Failure(e);
+            }
 						catch (e:Dynamic) {
 							tink.core.Outcome.Failure(tink.core.Error.withData('TINK_XML:XML_PARSE_ERROR', { error: e, data: raw }));
 						}
