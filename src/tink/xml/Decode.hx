@@ -1,5 +1,4 @@
 package tink.xml;
-import tink.xml.Decode.ParseError;
 
 #if macro
 import haxe.macro.Type;
@@ -13,9 +12,9 @@ private enum PropKind {
 	Attr(name:String);
 	Tag(name:String);
 	List(name:String);
+  Content;
 }
-#end
-
+#else
 class ParseError extends tink.core.Error.TypedError<{ node:Xml, document:Xml }> {
   public function new(msg:String, data, ?pos) {
     super(UnprocessableEntity, msg, pos);
@@ -25,6 +24,15 @@ class ParseError extends tink.core.Error.TypedError<{ node:Xml, document:Xml }> 
     return '$message at element <' + data.node.nodeName+'>';
   }
 }
+abstract Stringish(String) to String {
+  @:from static function fromAny<A>(s:A):Stringish {
+    if (Std.string(s).indexOf('CDATA') != -1) trace(Std.is(s, String));
+    return cast Std.string(s);
+  }
+  //@:from static function fromXml(x:Xml):Stringish
+    //return cast 'foobar';
+}
+#end
 
 class Decode {
 	#if macro
@@ -33,7 +41,8 @@ class Decode {
 	static function flush() {
 		
 	}
-	static var VALUE = macro [for (c in x) c.toString()].join('');
+	static var VALUE = macro [for (c in x) try c.nodeValue catch (e:Dynamic) c.toString()].join('');
+  
 	static function getReader(type:Type, ?value):Expr {
 		if (value == null) value = VALUE;
 		return 
@@ -49,20 +58,37 @@ class Decode {
 						ret;
 					}
 				case 'String':
-					value;
+					macro ($value : tink.xml.Decode.Stringish);
 				case 'Float':
 					macro Std.parseFloat($value);
 				case 'Int':
 					macro Std.parseInt($value);
 				case 'Bool':
-					macro $value.toLowerCase() != 'false';
+					macro switch $value.toLowerCase() {
+            case 'false', '0': false;
+            default: true;
+          }
 				default:
 					switch type.reduce() {
-						// case TAbstract(t):
-							
+						case TAbstract(_.get() => t, _):
+              var parseAs = t.type;
+              
+              if (t.meta.has(':parseAs'))
+                switch t.meta.get().getValues(':parseAs') {
+                  case [[v]]:
+                    parseAs = Context.getType(v.getString().orUse(v.toString()));
+                  default:
+                    t.pos.error('invalid @:parseAs directive');
+                }
+              
+              if (!parseAs.isSubTypeOf(type).isSuccess())
+                Context.currentPos().error('$parseAs cannot be implicitly converted to $type');
+                
+              getReader(parseAs, value);
+              
 						case TAnonymous(anon):
 							var id = anon.toString(),
-								anon = anon.get();
+							    anon = anon.get();
 							
 							cache[id] = [id];
 							
@@ -71,13 +97,13 @@ class Decode {
 								obj.push( {
 									field: f.name,
 									expr: {
-										// var name = f.name.toExpr(),
 										var meta = f.meta.get().toMap();
 										
 										function getName(name)
 											return 
 												switch meta[name] {
-													case [[e]]: e.getName().sure();
+													case [[e]]:  
+                            e.getName().sure();
 													default: f.name;
 												}
 										
@@ -88,12 +114,14 @@ class Decode {
 												List(getName(':list'));
 											else if (meta.exists(':tag'))
 												Tag(getName(':tag'));
+                      else if (meta.exists(':content'))
+                        Content;
 											else 
 												Tag(f.name);
-										function error(msg:String) {
-                      //return macro throw $v{msg};
+                        
+										function error(msg:String) 
                       return macro throw new tink.xml.Decode.ParseError($v{msg}, { node: x, document: root });
-                    }
+                    
 										var value = 
 											switch kind {
 												case List(_):
@@ -101,8 +129,8 @@ class Decode {
 													getReader((macro { var a : $ct = null; a[0]; } ).typeof().sure());
 												case Attr(name):
 													getReader(f.type, macro x.get($v{name}));
-												case Tag(_):
-													getReader(f.type);
+												case Tag(_), Content:
+                          getReader(f.type);
 											},
 											missing =
 												if (f.meta.has(':optional')) 
@@ -113,7 +141,7 @@ class Decode {
 															error('missing attribute $name');
 														case Tag(name):
 															error('missing element $name');
-														case List(_):
+														case List(_), Content:
 															macro null;
 													}
 										
@@ -124,7 +152,7 @@ class Decode {
 													else $missing;
 											case Tag(name):
 												macro {
-													var candidate = x.elementsNamed($v{name}).next();
+													var candidate:Xml = x.elementsNamed($v{name}).next();
 													if (candidate == null) $missing;
 													else {
                             var x = candidate;
@@ -135,6 +163,8 @@ class Decode {
 												macro {
 													[for (x in x.elementsNamed($v{name})) $value];
 												}
+                      case Content:
+                        value;
 										}
 									}
 								});
