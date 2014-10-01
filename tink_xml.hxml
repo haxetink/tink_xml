@@ -1,7 +1,9 @@
 -cp src
 -cp tests
 -resource tests/Example.xml@example1
--lib tink_macro
+-resource tests/scxml.xml@scxml
+-cp ../tink_core/src/
+-cp ../tink_macro/src/
 -main RunTests
 -js bin/tests.js
 #iota start Run.bat
