@@ -21,16 +21,8 @@ class ParseError extends tink.core.Error.TypedError<{ node:Xml, document:Xml }> 
     this.data = data;
   }
   override function toString() {
-    return '$message at element <' + data.node.nodeName+'>';
+    return '$message at element:' + data.node.toString();
   }
-}
-abstract Stringish(String) to String {
-  @:from static function fromAny<A>(s:A):Stringish {
-    if (Std.string(s).indexOf('CDATA') != -1) trace(Std.is(s, String));
-    return cast Std.string(s);
-  }
-  //@:from static function fromXml(x:Xml):Stringish
-    //return cast 'foobar';
 }
 #end
 
@@ -58,7 +50,7 @@ class Decode {
 						ret;
 					}
 				case 'String':
-					macro ($value : tink.xml.Decode.Stringish);
+					value;
 				case 'Float':
 					macro Std.parseFloat($value);
 				case 'Int':
