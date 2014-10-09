@@ -75,8 +75,9 @@ class Decode {
               
               if (!parseAs.isSubTypeOf(type).isSuccess())
                 Context.currentPos().error('$parseAs cannot be implicitly converted to $type');
-                
-              getReader(parseAs, value);
+              var ct = type.toComplex();  
+              
+              macro (${getReader(parseAs, value)} : $ct);
               
 						case TAnonymous(anon):
 							var id = anon.toString(),
@@ -177,7 +178,7 @@ class Decode {
 						try { 
 							var root = Xml.parse(raw).firstElement(); 
               var x = root;
-							tink.core.Outcome.Success($ret); 
+							tink.core.Outcome.Success(($ret : $t)); 
 						}
             catch (e:tink.xml.Decode.ParseError) {
               var e:tink.core.Error = e;
