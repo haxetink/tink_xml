@@ -8,7 +8,7 @@
 	"releasenote": "Initial version.",
 	"contributors": ["back2dos"],
 	"dependencies": {
-		"tink_macro": "0.3.0-beta"
+		"tink_macro": ""
 	},
 	"classPath": "src" 
 }
