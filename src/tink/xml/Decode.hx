@@ -28,13 +28,32 @@ class ParseError extends tink.core.Error.TypedError<{ node:Xml, document:Xml }> 
 
 class Decode {
 	#if macro
-	static var cache = new Map();
-	static var ctx:Array<Field> = [];
-	static function flush() {
-		
-	}
 	static var VALUE = macro [for (c in x) try c.nodeValue catch (e:Dynamic) c.toString()].join('');
-  
+
+  static function error(msg:String) 
+		return macro throw new tink.xml.Decode.ParseError($v{msg}, { node: x, document: root });
+
+	static function enumReader(e:EnumType):Expr {
+		var cases = new Array<Case>();
+		
+		for (name in e.names) {
+			var ctor = e.constructs[name];
+			switch ctor.type {
+				case TFun([ { t: t } ], _):
+					var condition = macro x.nodeName.toLowerCase() == $v { ctor.name.toLowerCase() };
+					cases.push( { 
+						values: [macro x],
+						guard: condition,
+						expr: macro $p{ (e.module+'.' + e.name+'.' + ctor.name).split('.') } (${ getReader(t) }),
+					});
+				default:
+					Context.currentPos().error('${e.name}.${ctor.name} must have exactly one argument for XML parsing');
+			}
+		}
+		
+		return ESwitch(macro x, cases, error('No matching rule found')).at();
+	}
+	
 	static function getReader(type:Type, ?value):Expr {
 		if (value == null) value = VALUE;
 		return 
@@ -49,6 +68,8 @@ class Decode {
 							ret.push($body);
 						ret;
 					}
+				case 'Xml': 
+					macro x;
 				case 'String':
 					value;
 				case 'Float':
@@ -62,6 +83,8 @@ class Decode {
           }
 				default:
 					switch type.reduce() {
+						case TEnum(_.get() => e, _):
+							enumReader(e);
 						case TAbstract(_.get() => t, _):
               var parseAs = t.type;
               
@@ -82,8 +105,6 @@ class Decode {
 						case TAnonymous(anon):
 							var id = anon.toString(),
 							    anon = anon.get();
-							
-							cache[id] = [id];
 							
 							var obj = [];
 							for (f in anon.fields) 
@@ -110,10 +131,7 @@ class Decode {
                       else if (meta.exists(':content'))
                         Content;
 											else 
-												Tag(f.name);
-                        
-										function error(msg:String) 
-                      return macro throw new tink.xml.Decode.ParseError($v{msg}, { node: x, document: root });
+												Tag(f.name);                        
                     
 										var value = 
 											switch kind {
@@ -172,7 +190,6 @@ class Decode {
 			switch e {
 				case macro ($e : $t):
 					var ret = getReader(t.toType().sure());
-					flush();
 					macro @:pos(e.pos) {
 						var raw = $e;
 						try { 
@@ -189,7 +206,6 @@ class Decode {
 						}
 					}
 				default:
-					throw (e);
 					e.reject('Expression must be ECheckType');
 			}
 	
