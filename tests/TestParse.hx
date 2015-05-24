@@ -1,6 +1,6 @@
 package ;
 
-import tink.xml.Decode.parseXml;
+import tink.xml.Structure;
 
 using tink.CoreApi;
 
@@ -37,17 +37,21 @@ typedef Scxml = {
 class TestParse extends Base {
 	function test() {
 		assertStructEq(
-			Success({ foo: 5 }),
-			parseXml(('<x><foo>5</foo></x>' : { foo : Int }))
+			Success( { foo: 5 } ),
+			new Structure<{ foo : Int }>().read('<x><foo>5</foo></x>')
 		);
     
-		assertStructEq(
-			Failure(cast { message : 'missing element bar' }),
-			parseXml(('<x><foo>5</foo></x>' : { bar : Int }))
+		assertEquals(
+			'Missing element "bar"',
+			switch new Structure<{ bar : Int }>().read('<x><foo>5</foo></x>') {
+				case Failure(f): f.message;
+				default: null;
+			}
 		);
 		
 		var example = haxe.Resource.getString('example1');
-		assertEquals('a87700ff', parseXml((example : Example)).sure().palettes[0].colors[2].value);
+		
+		assertEquals('a87700ff', new Structure<Example>().read(example).sure().palettes[0].colors[2].value);
   	var scxml = haxe.Resource.getString('scxml');
     
     assertStructEq(
@@ -82,7 +86,7 @@ class TestParse extends Base {
           }
         ]
       } : Scxml),
-      parseXml((scxml : Scxml)).sure()
+			new Structure<Scxml>().read(scxml).sure()
     );
 	}
 }
