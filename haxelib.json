@@ -1,14 +1,21 @@
 {
 	"name": "tink_xml",
-	"url" : "http://haxetink.org/tink_xml",
 	"license": "MIT",
-	"tags": ["tink", "cross", "utility", "xml"],
+	"tags": [
+		"tink",
+		"cross",
+		"utility",
+		"xml"
+	],
+	"classPath": "src",
 	"description": "Xml to Haxe objects",
-	"version": "0.0.0",
-	"releasenote": "Initial version.",
-	"contributors": ["back2dos"],
+	"contributors": [
+		"back2dos"
+	],
+	"releasenote": "First haxelib release.",
+	"version": "0.1.0",
+	"url": "http://haxetink.org/tink_xml",
 	"dependencies": {
 		"tink_macro": ""
-	},
-	"classPath": "src" 
+	}
 }
