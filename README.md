@@ -118,7 +118,7 @@ abstract Text from String to String {
 ```
 
 Nothing fancy. The main reason is that this library should work on the DOM all the same. Also, small interfaces rock.
-Please do note that NodeName is case insensitive.
+Please do note that `NodeName` is case insensitive.
 
 # Supported types
 
@@ -190,7 +190,8 @@ An array is read by reading each child as the array type. Booooring.
 
 ## Primitives
 
-Currently `Int`, `String`, `Float` and `Bool` are supported. These strings are considered `false` (case insensitively): `''`, `'0'`, `'false'` and `'null'`.
+Currently `Int`, `String`, `Float` and `Bool` are supported.  
+These strings are considered `false` (case insensitively): `''`, `'0'`, `'false'` and `'null'`.
 
 ## Source
 
