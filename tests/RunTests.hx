@@ -2,12 +2,15 @@ package ;
 
 import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
+import tink.xml.Structure;
+
+using tink.CoreApi;
 
 class RunTests {
 	static var tests:Array<TestCase> = [
 		new TestParse(),
+		new TestRtti(),
 	];
-	
 	static function main() {
 		#if js //works for nodejs and browsers alike
 		var buf = [];
@@ -26,5 +29,6 @@ class RunTests {
 		for (test in tests)
 			runner.add(test);
 		runner.run();
+		
 	}
 }

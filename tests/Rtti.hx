@@ -46,7 +46,7 @@ typedef Meta = {
 }
 
 typedef FunctionInfo = {
-	@:attr('a') var params:Params;
+	@:attr(a) var params:Params;
 	@:children var types:Array<TypeRef>;
 }
 
@@ -109,13 +109,17 @@ typedef FieldInfo = {>HasMeta,
 }
 
 typedef ClassInfo = {>BaseInfo,
+	@:optional(false) 
+	@:attr('interface') var isInterface : Bool;
+	
 	@:optional(false)
 	@:attr('extern') var isExtern : Bool;
+	
 	
 	@:list('implements') var interfaces:Array<TypePath<ClassInfo>>;
 	
 	@:optional 
-	@:tag('extends') var base:TypePath<ClassInfo>;
+	@:tag('extends') var superClass:TypePath<ClassInfo>;
 	
 	@:children var fields:Array<FieldInfo>;
 }

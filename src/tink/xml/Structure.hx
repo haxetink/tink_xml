@@ -194,7 +194,7 @@ class Structure<T> {
 					}
 				//This is quirky. Find a way to init the field right away	
 				if (defaultValue == None)
-					obj.push( { field: fieldName, expr: macro null } );
+					obj.push( { field: fieldName, expr: macro cast null } );
 				
 				ret.push(macro @:pos(f.pos) switch x.getAttribute($v{name}) {
 					case null:
@@ -204,9 +204,8 @@ class Structure<T> {
 				});
 			}
 			
-			function name() { 
+			function name() 
 				obj.push({ field: fieldName, expr: macro x.name });
-			}
 			
 			function children() { 
 				if (rest != null)
@@ -224,9 +223,8 @@ class Structure<T> {
 				rest = macro @:pos(f.pos) ret.$fieldName.push(${getReader(type)}.doRead(x));
 			}
 			
-			function content() { 
+			function content()
 				obj.push( { field: fieldName, expr: macro x.getText() } );
-			}
 			
 			function list(name:String) { 
 				obj.push( { field: fieldName, expr: macro [] } );
@@ -252,24 +250,27 @@ class Structure<T> {
 			}
 			
 			function tag(name:String) { 
-				if (defaultValue == None)
-					obj.push( { field: fieldName, expr: macro null } );
+				ret.unshift(fieldName.define(macro false));
+				if (defaultValue == None) 
+					obj.push( { field: fieldName, expr: macro cast null } );
 					
 				switch defaultValue {
 					case None:
-						ret.push(macro if (ret.$fieldName == null) 
+						ret.push(macro if (!$i{fieldName}) 
 							${error('Missing element "$name"')}
 						);
 					case Some(Right(v)):
-						ret.push(macro if (ret.$fieldName == null) 
+						ret.push(macro if (!$i{fieldName}) 
 							ret.$fieldName = $v
 						);
 					default:
 				}
 				
 				byName.unshift(macro if (x.name == $v{name}) {
-					if (ret.$fieldName == null)
+					if (!$i{fieldName}) {
+						$i{fieldName} = true;
 						ret.$fieldName = $p{readerForType(f.type).split('.')}.inst.doRead(x);
+					}
 					else
 						${error('Duplicate element "$name"')};
 					continue;
