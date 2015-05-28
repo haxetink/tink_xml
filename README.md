@@ -200,7 +200,7 @@ A `Source` is passed as is. Example:
 ```haxe
 typedef Entry = {>Entity,
   var summary:String;
-  var content:tink.xml.Source
+  var content:tink.xml.Source;//will simply contain the child node called 'content', e.g. in the above example `<content type="xhtml">...</content>`
 }
 ```
 
