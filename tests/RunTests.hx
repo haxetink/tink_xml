@@ -10,6 +10,7 @@ class RunTests {
 	static var tests:Array<TestCase> = [
 		new TestParse(),
 		new TestRtti(),
+		new TestAtom(),
 	];
 	static function main() {
 		#if js //works for nodejs and browsers alike

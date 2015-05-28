@@ -3,6 +3,10 @@
 -cp tests
 -neko bin/tinkxml.n
 -main RunTests
+--each
+-xml out.xml
+--no-output
+--next
 -resource tests/Example.xml@example1
 -resource tests/scxml.xml@scxml
--xml out.xml
+-resource tests/atom.xml@atom

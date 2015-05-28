@@ -47,14 +47,19 @@ typedef Entity = {
   var title:String;
   var id:String;
   var updated:String;
-  @:list('link') var links:Array<String>;
+  @:list('link') var links:Array<{
+		@:attr var href:String;
+		@:optional @:attr var rel:String;
+		@:optional @:attr var type:String;
+	}>;
   
   @:optional var author:{
     var name:String;
     var email:String;
     @:optional var uri:String;
-  }
+  };
 }
+
 typedef Feed = {>Entity,
   @:optional @:tag var subtitle:String;
   @:list('entry') var entries:Array<Entry>;
@@ -65,7 +70,7 @@ typedef Entry = {>Entity,
   var content:{
     @:attr var type:String;
     @:content var content:String;
-  }
+  };
 }
 
 //And now:
@@ -78,7 +83,7 @@ switch new tink.xml.Structure<atom.Feed>().read('example.xml') {
 }
 ```
 
-The `tink.xml.Structure` is a `@:genericBuild` type that will create the necessary validating parser at compile time.
+Kabooom! It's parsed. How? The `tink.xml.Structure` is a `@:genericBuild` type that will create the necessary validating parser at compile time.
 
 # XML API
 

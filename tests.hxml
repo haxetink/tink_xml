@@ -15,5 +15,7 @@ flash.events.EventDispatcher
 -neko bin/tinkxml.n
 -resource tests/Example.xml@example1
 -resource tests/scxml.xml@scxml
+-resource tests/atom.xml@atom
+
 -resource rtti.xml@rtti
 -cmd neko bin/tinkxml.n
