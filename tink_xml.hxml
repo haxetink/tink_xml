@@ -1,9 +1,8 @@
+-lib tink_macro
 -cp src
 -cp tests
+-neko bin/tinkxml.n
+-main RunTests
 -resource tests/Example.xml@example1
 -resource tests/scxml.xml@scxml
--cp ../tink_core/src/
--cp ../tink_macro/src/
--main RunTests
--js bin/tests.js
-#iota start Run.bat
+-xml out.xml

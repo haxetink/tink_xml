@@ -1,13 +1,14 @@
 package tink.xml;
 
 import tink.core.Outcome;
+import haxe.ds.Option;
 
 class Reader<T> {
 
 	public function new() {}
 	
 	function doRead(x:Source):T 
-		throw 'abstract';
+		throw 'abstract';	
 		
 	public function read(x:Source):Outcome<T, ReaderError> 
 		return
