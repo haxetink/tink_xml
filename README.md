@@ -4,7 +4,7 @@ This library aims to make XML parsing in Haxe pleasant, by allowing to express c
 
 Take this example atom feed from wikipedia:
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
  
 <feed xmlns="http://www.w3.org/2005/Atom">
@@ -40,7 +40,7 @@ Take this example atom feed from wikipedia:
 
 It can be parsed like so (code is not checked against the atom spec!):
   
-```
+```haxe
 package atom;
 
 typedef Entity = {
@@ -89,7 +89,7 @@ Kabooom! It's parsed. How? The `tink.xml.Structure` is a `@:genericBuild` type t
 
 The `tink_xml` library brings its own small XML API defined like so:
 
-```
+```haxe
 abstract Source {
 	public var name(get, never):NodeName;
 	
@@ -138,7 +138,7 @@ Their fields may have the following metadata (the name parameter always being op
 
 Additionally, `@:attr` and `@:tag` may be `@:optional` with a default value, e.g.:
 
-```
+```haxe
 {
   @:optional('xhtml')
   @:attr var type:String;
@@ -162,7 +162,7 @@ Matching is done in order of appearence, except for `@:default` which always goe
 
 Here is an example:
 
-```
+```haxe
 enum Element {
 	@:tag(a) EAnchor(a:Anchor);
 	@:default EAny(n:Any);
@@ -196,7 +196,7 @@ Currently `Int`, `String`, `Float` and `Bool` are supported. These strings are c
 
 A `Source` is passed as is. Example:
 	
-```
+```haxe
 typedef Entry = {>Entity,
   var summary:String;
   var content:tink.xml.Source
@@ -211,7 +211,7 @@ Both abstracts and classes can be read if the have a static `readXml` method, wi
 
 There is a special `TokenList` type, that allows you to easily parse token lists, e.g `TokenList<' '>` will result in the following abstract:
 	
-```
+```haxe
 abstract TokenList20(Array<String>) from Array<String> to Array<String> {
 	public var length(get, never):Int;
 	
