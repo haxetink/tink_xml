@@ -48,10 +48,10 @@ typedef Entity = {
   var id:String;
   var updated:String;
   @:list('link') var links:Array<{
-		@:attr var href:String;
-		@:optional @:attr var rel:String;
-		@:optional @:attr var type:String;
-	}>;
+    @:attr var href:String;
+    @:optional @:attr var rel:String;
+    @:optional @:attr var type:String;
+  }>;
   
   @:optional var author:{
     var name:String;
@@ -91,29 +91,29 @@ The `tink_xml` library brings its own small XML API defined like so:
 
 ```haxe
 abstract Source {
-	public var name(get, never):NodeName;
-	
-	public function getText():Text;
-	public function getAttribute(name:String):Null<Text>;
-	public function elements():Iterator<Source>;
-	public function toString():String;
-	
-	@:from static public function fromString(s:String):Source;
-	@:from static public function fromXml(x:Xml):Source;
-	@:from static public function fromDom(e:js.html.Element):Source;
-}	
+  public var name(get, never):NodeName;
+  
+  public function getText():Text;
+  public function getAttribute(name:String):Null<Text>;
+  public function elements():Iterator<Source>;
+  public function toString():String;
+  
+  @:from static public function fromString(s:String):Source;
+  @:from static public function fromXml(x:Xml):Source;
+  @:from static public function fromDom(e:js.html.Element):Source;
+}  
 
 abstract NodeName to String {
-	
-	@:from static inline function ofString(s:String):NodeName;
-	@:commutative @:op(a == b) static public inline function equalsString(a:NodeName, b:String):Bool; 		
-	@:op(a == b) static public inline function equalsName(a:NodeName, b:NodeName):Bool; 
+  
+  @:from static inline function ofString(s:String):NodeName;
+  @:commutative @:op(a == b) static public inline function equalsString(a:NodeName, b:String):Bool;     
+  @:op(a == b) static public inline function equalsName(a:NodeName, b:NodeName):Bool; 
 }
 
 abstract Text from String to String {
-	@:to inline function toInt():Int;
-	@:to inline function toFloat():Float;		
-	@:to inline function toBool():Bool;
+  @:to inline function toInt():Int;
+  @:to inline function toFloat():Float;    
+  @:to inline function toBool():Bool;
 }
 ```
 
@@ -131,7 +131,7 @@ Their fields may have the following metadata (the name parameter always being op
 - `@:attr(name)` reads an attribute
 - `@:tag(name)` reads a single tag - this is also the default
 - `@:list(name)` reads all children named `name`
-- `@:nth(pos)` reads the element at position pos (this is still a little quirky. using anything but @:nth(1) is currently not recommended)
+- `@:nth(pos)` reads the element at position `pos` (this is still a little quirky. using anything but `@:nth(1)` is currently not recommended)
 - `@:children` reads all other children
 - `@:name` reads the element's name
 - `@:content` reads all of the element's content (think `innerHTML`)
@@ -156,7 +156,7 @@ Enums can also be matched against tags, considering the following:
   - if prefixed by `@:default` (allowed only once per enum) it is matched against when no other constructor matches
   - if prefixed by `@:tag(name)` then it is matched against if the element's name is `name`
   - if prefixed by `@:if(condition)` then it is matched if condition evaluates to true, where `x` is the currently parsed element represented as `tink.xml.Source` (see below)
-	- if no metadata is specified, then all except one leading capital letters of the constructor name are removed and the rest is matched against the element name, e.g. TDClass is matched against "class".
+  - if no metadata is specified, then all except one leading capital letters of the constructor name are removed and the rest is matched against the element name, e.g. TDClass is matched against "class".
 
 Matching is done in order of appearence, except for `@:default` which always goes last.
 
@@ -164,21 +164,21 @@ Here is an example:
 
 ```haxe
 enum Element {
-	@:tag(a) EAnchor(a:Anchor);
-	@:default EAny(n:Any);
+  @:tag(a) EAnchor(a:Anchor);
+  @:default EAny(n:Any);
 }
 
 typedef Base = {
-	@:children var children:Array<Element>;
+  @:children var children:Array<Element>;
 }
 
 typedef Anchor = {>Base,
-	@:optional @:attr var href: String; 
-	@:optional @:attr var title: String; 
-	@:optional @:attr var name: String; 
+  @:optional @:attr var href: String; 
+  @:optional @:attr var title: String; 
+  @:optional @:attr var name: String; 
 }
 typedef Any = {>Base,
-	@:name var nodeName:String,
+  @:name var nodeName:String,
 }
 ```
 
@@ -196,7 +196,7 @@ These strings are considered `false` (case insensitively): `''`, `'0'`, `'false'
 ## Source
 
 A `Source` is passed as is. Example:
-	
+  
 ```haxe
 typedef Entry = {>Entity,
   var summary:String;
@@ -211,17 +211,17 @@ Both abstracts and classes can be read if the have a static `readXml` method, wi
 # TokenList
 
 There is a special `TokenList` type, that allows you to easily parse token lists, e.g `TokenList<' '>` will result in the following abstract:
-	
+  
 ```haxe
 abstract TokenList20(Array<String>) from Array<String> to Array<String> {
-	public var length(get, never):Int;
-	
-	public inline function iterator():Iterator<String>;
-	
-	@:arrayAccess function get(index:Int):String;
-	
-	@:to public function toString():String;
-	
-	@:from static function ofString(s:String):TokenList20;
+  public var length(get, never):Int;
+  
+  public inline function iterator():Iterator<String>;
+  
+  @:arrayAccess function get(index:Int):String;
+  
+  @:to public function toString():String;
+  
+  @:from static function ofString(s:String):TokenList20;
 }
 ```
