@@ -96,7 +96,7 @@ private class XmlSource implements ISource {
 			return (x.nodeName : NodeName);
 				
 	public function getText()
-		return [for (c in x) try c.nodeValue catch (e:Dynamic) c.toString()].join('');
+		return [for (c in x) if (c.nodeType != Xml.Comment) try c.nodeValue catch (e:Dynamic) c.toString()].join('');
 				
 	public function new(x)
 		this.x = x;

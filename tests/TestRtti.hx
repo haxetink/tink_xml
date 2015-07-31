@@ -8,15 +8,15 @@ class TestRtti extends TestCase {
 	
 	function test() {
 		var s = Resource.getString('rtti');
-		//var p:Rtti.Path = [];
 		switch new Structure<Rtti>().read(s) {
 			case Success(data):
-				//$type(data);
-				
+				//
 				for (d in data)
 					switch d {
-						case IClass( { path: _.toString() => 'flash.events.EventDispatcher', isExtern: true, isInterface: false, interfaces: [{ path: _.toString() => 'flash.events.IEventDispatcher' }] }):
-							assertTrue(true);
+						case IClass( { path: _.toString() => 'haxe.ds.StringMap', isExtern: false, isInterface: false, interfaces: v }):
+							//trace(v[0]);
+              assertEquals(1, v.length);
+              assertEquals('haxe.IMap', v[0].path.toString());
 						default:
 					}
 			case Failure(e):

@@ -8,7 +8,7 @@ abstract Text(String) from String to String {
 		return 
 			if (this == null) Math.NaN;
 			else 
-				Std.parseInt(this.trim());
+				Std.parseFloat(this.trim());
 		
 	@:to inline function toInt()
 		return 

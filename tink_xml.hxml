@@ -4,9 +4,10 @@
 -neko bin/tinkxml.n
 -main RunTests
 --each
--xml out.xml
+-xml tests/rtti.xml
 --no-output
 --next
 -resource tests/Example.xml@example1
 -resource tests/scxml.xml@scxml
 -resource tests/atom.xml@atom
+-resource tests/rtti.xml@rtti

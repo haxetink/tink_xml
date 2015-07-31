@@ -1,5 +1,5 @@
 <theme version="2" displayName="Solarized">
-	<palette version="1" mode="light">
+	<palette version="1" mode="light" value="3.1">
 		<color identifier="foreground" value="445b62ff"/>
 		<color identifier="background" value="fdf5dbff"/>
 		<color value="a87700ff"/>
@@ -14,7 +14,7 @@
 		<color value="808080ff"/>
 		<color value="000000ff"/>
 	</palette>
-	<palette version="1" mode="dark">
+	<palette version="1" mode="dark" value="0.1">
 		<color identifier="foreground" value="819090ff"/>
 		<color identifier="background" value="002029ff"/>
 		<color value="a87700ff"/>

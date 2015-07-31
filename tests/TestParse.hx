@@ -9,6 +9,7 @@ typedef Example = {
 	@:list('palette') var palettes:Array<{
 		@:attr var version:Int;
 		@:attr var mode:String;
+		@:attr var value:Float;
 		@:list('color') var colors:Array<{ 
 			@:attr var value:String; 
 		}>;
@@ -52,6 +53,7 @@ class TestParse extends Base {
 		var example = haxe.Resource.getString('example1');
 		
 		assertEquals('a87700ff', new Structure<Example>().read(example).sure().palettes[0].colors[2].value);
+		assertEquals(3.1, new Structure<Example>().read(example).sure().palettes[0].value);
   	var scxml = haxe.Resource.getString('scxml');
     
     assertStructEq(
