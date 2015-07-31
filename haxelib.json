@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "First haxelib release.",
-	"version": "0.1.0",
+	"releasenote": "Fix float parsing.",
+	"version": "0.1.1",
 	"url": "http://haxetink.org/tink_xml",
 	"dependencies": {
 		"tink_macro": ""
