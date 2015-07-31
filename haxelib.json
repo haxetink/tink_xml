@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Fix float parsing.",
-	"version": "0.1.1",
+	"releasenote": "Fix float parsing for attributes.",
+	"version": "0.1.2",
 	"url": "http://haxetink.org/tink_xml",
 	"dependencies": {
 		"tink_macro": ""
