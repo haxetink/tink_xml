@@ -4,15 +4,15 @@ using StringTools;
 
 abstract Text(String) from String to String {
 	
-	@:to inline function toInt()
-		return 
-			if (this == null) 0; 
-			else 
-				Std.parseInt(this.trim());
-		
 	@:to inline function toFloat()
 		return 
 			if (this == null) Math.NaN;
+			else 
+				Std.parseInt(this.trim());
+		
+	@:to inline function toInt()
+		return 
+			if (this == null) 0; 
 			else 
 				Std.parseInt(this.trim());
 		
