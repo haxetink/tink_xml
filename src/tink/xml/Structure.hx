@@ -265,14 +265,18 @@ class Structure<T> {
             );
           default:
         }
-        
+        var set = macro ret.$fieldName = $p{readerForType(f.type).split('.')}.inst.doRead(x);
         byName.unshift(macro if (x.name == $v{name}) {
           if (!$i{fieldName}) {
             $i{fieldName} = true;
-            ret.$fieldName = $p{readerForType(f.type).split('.')}.inst.doRead(x);
+            $set;
           }
           else
-            ${error('Duplicate element "$name"')};
+            ${
+              if (f.meta.has(':useFirst')) macro $b{[]}
+              else if (f.meta.has(':useLast')) set
+              else error('Duplicate element "$name"')
+            };
           continue;
         });
       }
