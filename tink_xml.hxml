@@ -1,7 +1,7 @@
 -lib tink_macro
 -cp src
 -cp tests
--neko bin/tinkxml.n
+-js bin/tinkxml.js
 -main RunTests
 --each
 -xml tests/rtti.xml

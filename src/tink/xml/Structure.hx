@@ -341,16 +341,19 @@ class Structure<T> {
 		
 	static function readerForType(type:Type):String {
 		//var signature = Context.signature(type.toComplex());
-		var signature = type.reduce().toComplex().toString();
+    type = type.reduce();
+		var signature = type.toComplex().toString();
+    
+    signature = Context.signature(signature);
+    
 		if (!map.exists(signature))
 			map[signature] = counter++;
 			
 		var name = 'tink.xml.Parser_'+map[signature];
-		//trace(type, name);
 		
 		var exists = 
 			try {
-				Context.getType(name);
+				Context.getModule(name);
 				true;
 			}
 			catch (e:Dynamic) false;
@@ -358,11 +361,11 @@ class Structure<T> {
 		if (!exists) {
 			var main = name.split('.').pop(),
 					ct = type.toComplex();
-			
+          
 			var reader = macro class $main extends Reader<$ct> {
 				static public var inst(default, null) = ${main.instantiate()};
 			}
-			
+      
 			reader.meta = [{ name : ':build', params: [macro tink.xml.Structure.buildReader()], pos: reader.pos }];
 			
 			Context.defineModule(name, [reader]);
