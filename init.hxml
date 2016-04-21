@@ -1,0 +1,5 @@
+-js foo
+haxe.ds.EnumValueMap
+-dce no
+--no-output
+-xml rtti.xml
