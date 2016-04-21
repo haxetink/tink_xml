@@ -18,7 +18,7 @@ matrix:
 install:
   - haxelib install travix
   - haxelib run travix install
-  - haxe init.html
+  - haxe init.hxml
   
 script:
   - haxelib run travix interp
