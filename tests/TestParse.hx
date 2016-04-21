@@ -5,23 +5,23 @@ import tink.xml.Structure;
 using tink.CoreApi;
 
 typedef Example = {
-	
-	@:list('palette') var palettes:Array<{
-		@:attr var version:Int;
-		@:attr var mode:String;
-		@:attr var value:Float;
-		@:list('color') var colors:Array<{ 
-			@:attr var value:String; 
-		}>;
-	}>;
-	
-	@:list('item') var items:Array<{
-		@:optional @:attr var scope:String;
-		@:optional @:attr var definition:String;
-		@:attr var colorsLight:String;
-		@:attr var colorsDark:String;
-		@:attr var traits:String;
-	}>;
+  
+  @:list('palette') var palettes:Array<{
+    @:attr var version:Int;
+    @:attr var mode:String;
+    @:attr var value:Float;
+    @:list('color') var colors:Array<{ 
+      @:attr var value:String; 
+    }>;
+  }>;
+  
+  @:list('item') var items:Array<{
+    @:optional @:attr var scope:String;
+    @:optional @:attr var definition:String;
+    @:attr var colorsLight:String;
+    @:attr var colorsDark:String;
+    @:attr var traits:String;
+  }>;
 }
 
 typedef Scxml = {
@@ -36,25 +36,25 @@ typedef Scxml = {
 }
 
 class TestParse extends Base {
-	function test() {
-		assertStructEq(
-			Success( { foo: 5 } ),
-			new Structure<{ foo : Int }>().read('<x><foo>5</foo></x>')
-		);
+  function test() {
+    assertStructEq(
+      Success( { foo: 5 } ),
+      new Structure<{ foo : Int }>().read('<x><foo>5</foo></x>')
+    );
     
-		assertEquals(
-			'Missing element "bar"',
-			switch new Structure<{ bar : Int }>().read('<x><foo>5</foo></x>') {
-				case Failure(f): f.message;
-				default: null;
-			}
-		);
-		
-		var example = haxe.Resource.getString('example1');
-		
-		assertEquals('a87700ff', new Structure<Example>().read(example).sure().palettes[0].colors[2].value);
-		assertEquals(3.1, new Structure<Example>().read(example).sure().palettes[0].value);
-  	var scxml = haxe.Resource.getString('scxml');
+    assertEquals(
+      'Missing element "bar"',
+      switch new Structure<{ bar : Int }>().read('<x><foo>5</foo></x>') {
+        case Failure(f): f.message;
+        default: null;
+      }
+    );
+    
+    var example = haxe.Resource.getString('example1');
+    
+    assertEquals('a87700ff', new Structure<Example>().read(example).sure().palettes[0].colors[2].value);
+    assertEquals(3.1, new Structure<Example>().read(example).sure().palettes[0].value);
+    var scxml = haxe.Resource.getString('scxml');
     
     assertStructEq(
       ({
@@ -88,7 +88,7 @@ class TestParse extends Base {
           }
         ]
       } : Scxml),
-			new Structure<Scxml>().read(scxml).sure()
+      new Structure<Scxml>().read(scxml).sure()
     );
-	}
+  }
 }
