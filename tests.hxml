@@ -1,7 +1,8 @@
 -resource tests/Example.xml@example1
 -resource tests/scxml.xml@scxml
 -resource tests/atom.xml@atom
--resource rtti.xml@rtti
+-resource bin/rtti.xml@rtti
 
+-lib hx3compat
 -cp tests
 -main RunTests

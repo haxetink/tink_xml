@@ -1,0 +1,9 @@
+{
+  "name": "@haxetink/tink_xml",
+  "scripts": {
+    "postinstall": "lix download && haxe init.hxml"
+  },
+  "dependencies": {
+    "lix": "^15.6.0-alpha.1"
+  }
+}

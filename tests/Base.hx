@@ -7,29 +7,29 @@ import haxe.unit.TestStatus;
 import tink.core.Either;
 
 abstract PhysicalType<T>(Either<Class<T>, Enum<T>>) {
-  
+
   function new(v) this = v;
-  
-  public function toString() 
-    return 
+
+  public function toString()
+    return
       switch this {
         case Left(c): Type.getClassName(c);
         case Right(e): Type.getEnumName(e);
       }
-      
-  public function check(v:T) 
-    return 
+
+  public function check(v:T)
+    return
       Std.is(v, this.getParameters()[0]);
-  
-  @:from static public function ofClass<C>(c:Class<C>) 
+
+  @:from static public function ofClass<C>(c:Class<C>)
     return new PhysicalType(Left(c));
-    
-  @:from static public function ofEnum<E>(e:Enum<E>) 
+
+  @:from static public function ofEnum<E>(e:Enum<E>)
     return new PhysicalType(Right(e));
 }
 //TODO: this helper should go somewhere
 class Base extends TestCase {
-  
+
   function fail(msg:String, ?c : PosInfos) {
     currentTest.done = true;
     currentTest.success = false;
@@ -37,25 +37,25 @@ class Base extends TestCase {
     currentTest.posInfos = c;
     throw currentTest;
   }
-  
+
   function assertStructEq<T>(expected:T, found:T) {
     function compare(e:Dynamic, f:Dynamic):Bool
       return {
-        var ret = 
+        var ret =
         switch Type.typeof(e) {
           case TNull, TInt, TBool, TFloat, TUnknown, TClass(String): e == f;
           case TObject:
             var ret = true;
             //TODO: consider checking surplus fields
-            for (field in Reflect.fields(e)) 
+            for (field in Reflect.fields(e))
               if (field != '__id__' && !compare(Reflect.field(e, field), Reflect.field(f, field))) {
                 ret = false;
                 break;
               }
             ret;
           case TEnum(enm):
-            Std.is(f, enm) 
-            && 
+            Std.is(f, enm)
+            &&
             compare(Type.enumIndex(e), Type.enumIndex(f))
             &&
             compare(Type.enumParameters(e), Type.enumParameters(f));
@@ -68,14 +68,14 @@ class Base extends TestCase {
                   break;
                 }
             ret;
-          case TClass(_) if (Std.is(e, Map.IMap)):
-            var e:Map.IMap<Dynamic, Dynamic> = e,
-              f:Map.IMap<Dynamic, Dynamic> = f;
-              
+          case TClass(_) if (Std.is(e, haxe.Constraints.IMap)):
+            var e:haxe.Constraints.IMap<Dynamic, Dynamic> = e,
+              f:haxe.Constraints.IMap<Dynamic, Dynamic> = f;
+
             var ret = true;
             function find(orig:Dynamic) {
               for (copy in f.keys())
-                if (compare(orig, copy)) 
+                if (compare(orig, copy))
                   return copy;
               return orig;
             }
@@ -91,11 +91,11 @@ class Base extends TestCase {
             throw 'assert';
         }
         ret;
-      }  
+      }
     if (compare(expected, found)) assertTrue(true);
     else fail('expected something like $expected, found $found');
   }
-  
+
   function throws<T>(f:Void->Void, t:PhysicalType<T>, ?check:T->Bool, ?pos:PosInfos):Void {
     try f()
     catch (e:Dynamic) {
