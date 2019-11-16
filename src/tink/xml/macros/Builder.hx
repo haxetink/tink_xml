@@ -53,11 +53,26 @@ class Builder {
             default: throw 'assert';
           }
         default:
-          switch type.reduce() {
+          var strict = false;
+
+          while (true)
+            switch type {
+              case TType(_.get() => { module: 'tink.xml.Strict' }, _):
+                strict = true;
+                type = type.reduce();
+              default:
+                var next = type.reduce(true);
+                if (next == type) break;
+                type = next;
+            }
+
+          switch type {
+            case TEnum(_, _) | TAbstract(_, _) | TInst(_, _) if (strict):
+              Context.currentPos().error('${type.getName().substr(1).toLowerCase()} cannot be used with tink.xml.Strict');
             case TEnum(_.get() => e, _):
               enumReader(e);
             case TAnonymous(_.get() => { fields: fields } ):
-              anon(fields, type);
+              anon(fields, type, strict);
             case TAbstract(_.get() => a, _):
               baseReader(type, a);
             case TInst(_.get() => i, _):
@@ -152,11 +167,14 @@ class Builder {
       def = error('No matching rule found');
     return ESwitch(macro x, cases, def).at();
   }
+
   static function error(message:String)
     return macro throw new ReaderError($v{message}, x);
 
-  static function anon(fields:Array<ClassField>, type:Type):Expr {
+  static function anon(fields:Array<ClassField>, type:Type, ?strict:Bool):Expr {
     var obj = [];
+
+    // strict = true;
 
     var ret = ['ret'.define(EObjectDecl(obj).at(), type.toComplex())],
         byName = [],
@@ -164,7 +182,14 @@ class Builder {
         rest = null;
 
     ret.push(macro var i = 0);
-    ret.push(macro for (x in x.elements()) { var n = ++i; $b{byIndex}; $b{byName}; });
+    ret.push(macro for (child in x.elements()) { var n = ++i; $b{byIndex}; $b{byName}; });
+
+    var attributes = [];
+
+    if (strict)
+      ret.push(macro for (a in x.attributes())
+        ${ESwitch(macro a, attributes, macro throw new ReaderError('Unknown attribute "' + a + '"', x)).at()}
+      );
 
     for (f in fields) {
       var fieldName = f.name,
@@ -198,6 +223,8 @@ class Builder {
         if (defaultValue == None)
           obj.push( { field: fieldName, expr: macro cast null } );
 
+        attributes.push({ values: [macro $v{name}], expr: macro null });
+
         ret.push(macro @:pos(f.pos) switch x.getAttribute($v{name}) {
           case null:
             $ifNotFound;
@@ -222,7 +249,7 @@ class Builder {
               f.pos.error('@:children must always be Array');
           }
 
-        rest = macro @:pos(f.pos) ret.$fieldName.push(${getReader(type)}.doRead(x));
+        rest = macro @:pos(f.pos) ret.$fieldName.push(${getReader(type)}.doRead(child));
       }
 
       function content()
@@ -245,8 +272,8 @@ class Builder {
           case Some(Right(v)):
             v.reject('@:list may not have default value');
         }
-        byName.push(macro if (x.name == $v{name}) {
-          ret.$fieldName.push(${getReader(type)}.doRead(x));
+        byName.push(macro if (child.name == $v{name}) {
+          ret.$fieldName.push(${getReader(type)}.doRead(child));
           continue;
         });
       }
@@ -267,8 +294,8 @@ class Builder {
             );
           default:
         }
-        var set = macro ret.$fieldName = ${getReader(f.type)}.doRead(x);
-        byName.unshift(macro if (x.name == $v{name}) {
+        var set = macro ret.$fieldName = ${getReader(f.type)}.doRead(child);
+        byName.unshift(macro if (child.name == $v{name}) {
           if (!$i{fieldName}) {
             $i{fieldName} = true;
             $set;
@@ -305,7 +332,7 @@ class Builder {
                 case [{ expr: EConst(CInt(s)) }]:
                   obj.push({ field: fieldName, expr: macro null });
                   byIndex.push(macro if (n == ${tag.params[0]}) {
-                    ret.$fieldName = ${getReader(f.type)}.doRead(x);
+                    ret.$fieldName = ${getReader(f.type)}.doRead(child);
                     continue;
                   });
                   found = true;
@@ -338,6 +365,8 @@ class Builder {
 
     if (rest != null)
       byName.push(rest);
+    else if (strict)
+      byName.push(macro throw new ReaderError('Unknown element "' + child.name + '"', x));
     ret.push(macro ret);
     return ret.toBlock();
   }

@@ -11,6 +11,7 @@ class RunTests {
     new TestParse(),
     new TestRtti(),
     new TestAtom(),
+    new TestIssue6(),
   ];
   static function main() {
     #if js //works for nodejs and browsers alike
@@ -30,6 +31,6 @@ class RunTests {
     for (test in tests)
       runner.add(test);
     runner.run();
-    
+
   }
 }

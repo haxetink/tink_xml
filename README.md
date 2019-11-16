@@ -6,16 +6,16 @@ Take this example atom feed from wikipedia:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
- 
+
 <feed xmlns="http://www.w3.org/2005/Atom">
- 
+
   <title>Example Feed</title>
   <subtitle>A subtitle.</subtitle>
   <link href="http://example.org/feed/" rel="self" />
   <link href="http://example.org/" />
   <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
-  <updated>2003-12-13T18:30:02Z</updated> 
- 
+  <updated>2003-12-13T18:30:02Z</updated>
+
   <entry>
     <title>Atom-Powered Robots Run Amok</title>
     <link href="http://example.org/2003/12/13/atom03" />
@@ -34,12 +34,12 @@ Take this example atom feed from wikipedia:
       <email>johndoe@example.com</email>
     </author>
   </entry>
- 
+
 </feed>
 ```
 
 It can be parsed like so (code is not checked against the atom spec!):
-  
+
 ```haxe
 package atom;
 
@@ -52,7 +52,7 @@ typedef Entity = {
     @:optional @:attr var rel:String;
     @:optional @:attr var type:String;
   }>;
-  
+
   @:optional var author:{
     var name:String;
     var email:String;
@@ -74,7 +74,7 @@ typedef Entry = {>Entity,
 }
 
 //And now:
-  
+
 switch new tink.xml.Structure<atom.Feed>().read('example.xml') {
   case Success(feed):
     trace('Loaded ${feed.entries.length} entries from feed ${feed.title}');
@@ -92,27 +92,27 @@ The `tink_xml` library brings its own small XML API defined like so:
 ```haxe
 abstract Source {
   public var name(get, never):NodeName;
-  
+
   public function getText():Text;
   public function getAttribute(name:String):Null<Text>;
   public function elements():Iterator<Source>;
   public function toString():String;
-  
+
   @:from static public function fromString(s:String):Source;
   @:from static public function fromXml(x:Xml):Source;
   @:from static public function fromDom(e:js.html.Element):Source;
-}  
+}
 
 abstract NodeName to String {
-  
+
   @:from static inline function ofString(s:String):NodeName;
-  @:commutative @:op(a == b) static public inline function equalsString(a:NodeName, b:String):Bool;     
-  @:op(a == b) static public inline function equalsName(a:NodeName, b:NodeName):Bool; 
+  @:commutative @:op(a == b) static public inline function equalsString(a:NodeName, b:String):Bool;
+  @:op(a == b) static public inline function equalsName(a:NodeName, b:NodeName):Bool;
 }
 
 abstract Text from String to String {
   @:to inline function toInt():Int;
-  @:to inline function toFloat():Float;    
+  @:to inline function toFloat():Float;
   @:to inline function toBool():Bool;
 }
 ```
@@ -127,7 +127,7 @@ Please do note that `NodeName` is case insensitive.
 Anonymous objects are what you will use most of the time to represent tags.
 
 Their fields may have the following metadata (the name parameter always being optional and defaulting to the field name):
-  
+
 - `@:attr(name)` reads an attribute
 - `@:tag(name)` reads a single tag - this is also the default
 - `@:list(name)` reads all children named `name`
@@ -146,13 +146,17 @@ Additionally, `@:attr` and `@:tag` may be `@:optional` with a default value, e.g
 }
 ```
 
+### Strict mode
+
+You may use `Strict<{ ... }>` to generate strict parsers. Unexpected attribute names and child elements will then lead to errors instead being silently discarded.
+
 ## Enums
 
 Enums can also be matched against tags, considering the following:
-  
+
 1. Every constructor must have exactly one argument (that should have the type of the element)
 2. The tag is matched like so:
-  
+
   - if prefixed by `@:default` (allowed only once per enum) it is matched against when no other constructor matches
   - if prefixed by `@:tag(name)` then it is matched against if the element's name is `name`
   - if prefixed by `@:if(condition)` then it is matched if condition evaluates to true, where `x` is the currently parsed element represented as `tink.xml.Source` (see below)
@@ -173,9 +177,9 @@ typedef Base = {
 }
 
 typedef Anchor = {>Base,
-  @:optional @:attr var href: String; 
-  @:optional @:attr var title: String; 
-  @:optional @:attr var name: String; 
+  @:optional @:attr var href: String;
+  @:optional @:attr var title: String;
+  @:optional @:attr var name: String;
 }
 typedef Any = {>Base,
   @:name var nodeName:String,
@@ -190,13 +194,13 @@ An array is read by reading each child as the array type. Booooring.
 
 ## Primitives
 
-Currently `Int`, `String`, `Float` and `Bool` are supported.  
+Currently `Int`, `String`, `Float` and `Bool` are supported.
 These strings are considered `false` (case insensitively): `''`, `'0'`, `'false'` and `'null'`.
 
 ## Source
 
 A `Source` is passed as is. Example:
-  
+
 ```haxe
 typedef Entry = {>Entity,
   var summary:String;
@@ -211,17 +215,17 @@ Both abstracts and classes can be read if the have a static `readXml` method, wi
 # TokenList
 
 There is a special `TokenList` type, that allows you to easily parse token lists, e.g `TokenList<' '>` will result in the following abstract:
-  
+
 ```haxe
 abstract TokenList20(Array<String>) from Array<String> to Array<String> {
   public var length(get, never):Int;
-  
+
   public inline function iterator():Iterator<String>;
-  
+
   @:arrayAccess function get(index:Int):String;
-  
+
   @:to public function toString():String;
-  
+
   @:from static function ofString(s:String):TokenList20;
 }
 ```

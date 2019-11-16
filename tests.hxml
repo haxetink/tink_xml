@@ -3,6 +3,8 @@
 -resource tests/atom.xml@atom
 -resource bin/rtti.xml@rtti
 
+-dce full
+
 -lib hx3compat
 -cp tests
 -main RunTests
