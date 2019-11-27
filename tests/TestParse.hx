@@ -37,8 +37,14 @@ typedef Scxml = {
 
 class TestParse extends Base {
 
+
   function testIssue7() {
-    assertEquals(123, new Structure<{ x: Int }>().read('<root><x>123</x></root>').sure().x);
+    assertEquals(123, new Structure<{ x: Int }>().read('<root><X>123</X></root>').sure().x);// also testing case insensitivity here
+  }
+
+  function testIssue8() {
+		var data = new tink.xml.Structure<{@:name var name:String;}>().read("<hello/>").sure();
+		assertEquals('hello', data.name);
   }
   function test() {
     assertStructEq(

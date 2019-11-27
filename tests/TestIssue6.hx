@@ -32,6 +32,6 @@ class TestIssue6 extends Base {
     assertFail('Missing element "bar"', x.read('<x foo="123" />'));
 
     assertFail('Unknown attribute "boo"', x.read('<x foo="123" boo="321"><bar>yo</bar></x>'));
-    assertFail('Unknown element "FAR"', x.read('<x foo="123"><bar>yo</bar><far>nay</far></x>'));
+    assertFail('Unknown element "far"', x.read('<x foo="123"><bar>yo</bar><far>nay</far></x>'));
   }
 }
