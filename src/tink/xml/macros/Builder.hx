@@ -279,25 +279,26 @@ class Builder {
       }
 
       function tag(name:String) {
-        ret.unshift(fieldName.define(macro false));
+        var hasField = MacroApi.tempName('has_$fieldName');
+        ret.unshift(hasField.define(macro false));
         if (defaultValue == None)
           obj.push( { field: fieldName, expr: macro cast null } );
 
         switch defaultValue {
           case None:
-            ret.push(macro if (!$i{fieldName})
+            ret.push(macro if (!$i{hasField})
               ${error('Missing element "$name"')}
             );
           case Some(Right(v)):
-            ret.push(macro if (!$i{fieldName})
+            ret.push(macro if (!$i{hasField})
               ret.$fieldName = $v
             );
           default:
         }
         var set = macro ret.$fieldName = ${getReader(f.type)}.doRead(child);
         byName.unshift(macro if (child.name == $v{name}) {
-          if (!$i{fieldName}) {
-            $i{fieldName} = true;
+          if (!$i{hasField}) {
+            $i{hasField} = true;
             $set;
           }
           else
